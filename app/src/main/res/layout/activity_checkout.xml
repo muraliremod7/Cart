@@ -69,7 +69,7 @@
             <androidx.appcompat.widget.AppCompatSpinner
                 android:layout_marginTop="10dp"
                 android:spinnerMode="dialog"
-                android:background="@drawable/spinner_bg"
+                android:background="@drawable/bg_spinner"
                 android:id="@+id/choosedate_checkout"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
@@ -78,7 +78,7 @@
                 android:spinnerMode="dialog"
                 android:entries="@array/times_slot"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/spinner_bg"
+                android:background="@drawable/bg_spinner"
                 android:id="@+id/choosetime_checkout"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
@@ -109,10 +109,11 @@
             <TextView
                 android:layout_marginTop="10dp"
                 android:textStyle="bold"
-                android:textColor="@color/colorWarning"
+                android:textColor="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:textSize="18sp"
                 android:text="Apply Your Promo Code here"/>
             <LinearLayout
                 android:padding="10dp"
@@ -135,8 +136,9 @@
                     android:layout_height="40dp"
                     android:id="@+id/submitPromocode"
                     android:text="Apply"
+                    android:textSize="18sp"
                     android:textAllCaps="false"
-                    android:background="@color/colorInfo"
+                    android:background="@color/colorAccent"
                     android:textColor="@color/colorWhite"/>
             </LinearLayout>
             <LinearLayout
@@ -350,6 +352,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:visibility="gone"
+                    android:id="@+id/intimation"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Note : Free delivery for orders above RS.300/-"/>
                 <View
                     android:layout_marginTop="10dp"
                     android:background="#B7B7B7"

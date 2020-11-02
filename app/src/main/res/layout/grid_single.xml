@@ -107,7 +107,6 @@
                     android:orientation="horizontal"
                     android:layout_width="70dp"
                     android:layout_height="30dp">
-
                     <TextView
                         android:layout_weight="1"
                         android:gravity="center"
@@ -126,7 +125,6 @@
                         android:textColor="@color/primaryTextColor"
                         android:textSize="20sp"
                         android:textStyle="bold" />
-
                     <TextView
                         android:layout_weight="1"
                         android:gravity="center"

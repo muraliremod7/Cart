@@ -87,7 +87,7 @@ public class JavaMailApi extends AsyncTask<Void,Void,Void>  {
             MimeMessage mm = new MimeMessage(mSession);
 
             //Setting sender address
-            mm.setFrom(new InternetAddress(Constants.EMAIL));
+            mm.setFrom(new InternetAddress("info@cartcorner.in"));
             //Adding receiver
             mm.addRecipient(Message.RecipientType.TO, new InternetAddress(mEmail));
             //Adding subject

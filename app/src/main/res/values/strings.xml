@@ -96,7 +96,7 @@
         <item>2PM - 7PM</item>
     </string-array>
     <string-array name="paymenymode">
-        <item>Choose Paymode</item>
+        <item><b><c>Choose Paymode</c></b></item>
         <item>Pay On Delivery</item>
         <item>Pay Now</item>
     </string-array>

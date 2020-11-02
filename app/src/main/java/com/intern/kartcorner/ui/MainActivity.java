@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navItemIndex = 5;
         }
         if(prefManager.getUserId()!=null){
-            badgecount();
+            //badgecount();
         }
         initialviews(navigationView);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         loadFragment(new DashboardFragment());
         navigationExpandableListView
                 .init(this)
-                .addHeaderModel(new HeaderModel("Dashboard",R.drawable.home))
+                .addHeaderModel(new HeaderModel("Home",R.drawable.home))
                 .addHeaderModel(new HeaderModel("My Carts", R.drawable.cart, true)
                         .addChildModel(new ChildModel("Shopping Cart"))
                         .addChildModel(new ChildModel("Weekly Cart"))
@@ -102,11 +103,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .addHeaderModel(new HeaderModel("My Profile",R.drawable.myaccount))
                 .addHeaderModel(new HeaderModel("Order History",R.drawable.myorders))
                 .addHeaderModel(new HeaderModel("My Addresses",R.drawable.myaddress))
-                .addHeaderModel(new HeaderModel("Cancel And Return Policy",R.drawable.ic_assignment_return_black_24dp))
-                .addHeaderModel(new HeaderModel("Terms And Condition",R.drawable.ic_comment_black_24dp))
-                .addHeaderModel(new HeaderModel("About Us",R.drawable.aboutus))
-                .addHeaderModel(new HeaderModel("Contact Us",R.drawable.phone))
-                .addHeaderModel(new HeaderModel("Rate Us",R.drawable.ic_star_black_24dp))
+                .addHeaderModel(new HeaderModel("Offers",R.drawable.ic_local_offer_black_24dp))
+                .addHeaderModel(new HeaderModel("Cancel and Return Policy",R.drawable.ic_assignment_return_black_24dp))
+                .addHeaderModel(new HeaderModel("Terms and Conditions",R.drawable.ic_comment_black_24dp))
+                .addHeaderModel(new HeaderModel("About us",R.drawable.aboutus))
+                .addHeaderModel(new HeaderModel("Contact us",R.drawable.phone))
+                .addHeaderModel(new HeaderModel("Rate us",R.drawable.ic_star_black_24dp))
                 .addHeaderModel(new HeaderModel("Share",R.drawable.ic_menu_share))
                 .addHeaderModel(new HeaderModel("Logout",R.drawable.signout))
                 .build()
@@ -154,58 +156,53 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             logindialog("You have to login first before viewing your Addresses ?");
                         }
                         drawer.closeDrawer(GravityCompat.START);
-                    } else if (id == 5) {
-                        fragment = new CancelandReturnFragment();
-                        loadFragment(fragment);
-                        navItemIndex = 5;
-                        drawer.closeDrawer(GravityCompat.START);
                     }
-                    else if (id == 6) {
-                        fragment = new TermsandConditionFragment();
+                    else if (id == 5) {
+                        Intent intent = new Intent(MainActivity.this,OffersActivity.class);
+                        startActivity(intent);
+                        drawer.closeDrawer(GravityCompat.START);
+                    }else if (id == 6) {
+                        fragment = new CancelandReturnFragment();
                         loadFragment(fragment);
                         navItemIndex = 6;
                         drawer.closeDrawer(GravityCompat.START);
-                    }else if (id == 7) {
-                        fragment = new AboutUsFragment();
+                    }
+                    else if (id == 7) {
+                        fragment = new TermsandConditionFragment();
                         loadFragment(fragment);
                         navItemIndex = 7;
                         drawer.closeDrawer(GravityCompat.START);
-                    } else if (id == 8) {
-                        fragment = new ContactUsFragment();
+                    }else if (id == 8) {
+                        fragment = new AboutUsFragment();
                         loadFragment(fragment);
                         navItemIndex = 8;
                         drawer.closeDrawer(GravityCompat.START);
-                    }
-                    else if (id == 9) {
-                        String url36 = "https://play.google.com/store/apps/details?id=com.intern.kartcorner";
-                        Intent i36 = new Intent(Intent.ACTION_VIEW);
-                        i36.setData(Uri.parse(url36));
-                        startActivity(i36);
+                    } else if (id == 9) {
+                        fragment = new ContactUsFragment();
+                        loadFragment(fragment);
                         navItemIndex = 9;
                         drawer.closeDrawer(GravityCompat.START);
                     }
                     else if (id == 10) {
-//                        Intent sendIntent = new Intent();
-//                        sendIntent.setAction(Intent.ACTION_SEND);
-//                        sendIntent.putExtra(Intent.EXTRA_TEXT, "Wanna Order Grocery Online." + "\n" + "Download The App Now" + "\n" + "https://play.google.com/store/apps/details?id=com.intern.kartcorner&hl=en_IN");
-//                        sendIntent.setType("text/plain");
-//                        sendIntent.setPackage("com.whatsapp");
-//                        startActivity(sendIntent);
-
+                        String url36 = "https://play.google.com/store/apps/details?id=com.intern.kartcorner";
+                        Intent i36 = new Intent(Intent.ACTION_VIEW);
+                        i36.setData(Uri.parse(url36));
+                        startActivity(i36);
+                        navItemIndex = 10;
+                        drawer.closeDrawer(GravityCompat.START);
+                    }
+                    else if (id == 11) {
                         Intent share = new Intent(android.content.Intent.ACTION_SEND);
                         share.setType("text/plain");
                         share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-
-                        // Add data to the intent, the receiving app will decide
-                        // what to do with it.
                         share.putExtra(Intent.EXTRA_SUBJECT, "CartCorner");
                         share.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=com.intern.kartcorner&hl=en_IN");
 
                         startActivity(Intent.createChooser(share, "Share link!"));
-                        navItemIndex = 7;
+                        navItemIndex = 11;
                         drawer.closeDrawer(GravityCompat.START);
                     }
-                    else if (id == 11) {
+                    else if (id == 12) {
                         loginback();
                     }
                     return false;
@@ -241,10 +238,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }else {
                         logindialog("You have to login first before viewing your Cart Items?");
                     }
-//                    Intent intent = new Intent(MainActivity.this, SubCategoriesActivity.class);
-//                    intent.putExtra("catid",catid);
-//                    intent.putExtra("catname",catname);
-//                    startActivity(intent);
                     drawer.closeDrawer(GravityCompat.START);
                     return false;
                 });
@@ -295,26 +288,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if(prefManager.isLoggedIn()){
                 Intent intent = new Intent(MainActivity.this,CartItemsActivity.class);
                 startActivity(intent);
-
             }else {
                 logindialog("You have to login first before viewing your Cart Items?");
             }
 
             return true;
         }
-//        if(id == R.id.offers){
-//            Intent intent = new Intent(MainActivity.this,OffersActivity.class);
-//            startActivity(intent);
-//        }
         if(id == R.id.weekly_cart){
             Intent intent = new Intent(MainActivity.this,WMCartActivity.class);
             intent.putExtra("carttype","week");
             startActivity(intent);
+            finish();
         }
         if(id == R.id.monthly_cart){
             Intent intent = new Intent(MainActivity.this,WMCartActivity.class);
             intent.putExtra("carttype","month");
             startActivity(intent);
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
@@ -344,28 +334,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         transaction.commit();
     }
     protected void loginback() {
-
         AlertDialog alertbox = new AlertDialog.Builder(this,R.style.MyAlertDialogStyle)
                 .setMessage("Do you want to Confirm the Logout?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-
-                    // do something when the button is clicked
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        prefManager.clearSession();
-                        Intent logout = new Intent(MainActivity.this, LoginActivity.class);
-                        startActivity(logout);
-                        finish();
-                    }
+                .setPositiveButton("Yes", (arg0, arg1) -> {
+                    Intent logout = new Intent(MainActivity.this, LoginActivity.class);
+                    logout.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(logout);
+                    prefManager.clearLogin();
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-
-                    // do something when the button is clicked
-                    public void onClick(DialogInterface dialog, int arg1) {
-                        dialog.cancel();
-                    }
-                })
+                .setNegativeButton("No", (dialog, arg1) -> dialog.cancel())
                 .show();
-
     }
     @Override
     public void onBackPressed() {
@@ -407,15 +385,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     // do something when the button is clicked
                     public void onClick(DialogInterface arg0, int arg1) {
-
                         finish();
-                        //close();
-
-
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
-
                     // do something when the button is clicked
                     public void onClick(DialogInterface dialog, int arg1) {
                         dialog.cancel();

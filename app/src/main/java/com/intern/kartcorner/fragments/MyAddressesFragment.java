@@ -73,7 +73,7 @@ public class MyAddressesFragment extends Fragment implements GoogleApiClient.Con
 
     // TODO: Rename and change types of parameters
     private String mParam1;
-    private String mParam2;
+    private String optionalAddress;
     private ProgressDailog progressDailog;
     private ShowToast showToast;
     private ArrayList<MyAddressDAO> myAddressDAOS = new ArrayList<>();
@@ -132,7 +132,6 @@ public class MyAddressesFragment extends Fragment implements GoogleApiClient.Con
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -234,8 +233,8 @@ public class MyAddressesFragment extends Fragment implements GoogleApiClient.Con
         String apartmentname = addressapartmentname.getText().toString();
         String landmark = addresslandmark.getText().toString();
         String pincode = addresspincode.getText().toString();
-        String city = addresscity.getText().toString();
-        if(addressnickname.isEmpty()||personName.isEmpty()||landmark.isEmpty()||pincode.isEmpty()||city.isEmpty()){
+        optionalAddress = addresscity.getText().toString().toLowerCase();
+        if(addressnickname.isEmpty()||personName.isEmpty()||landmark.isEmpty()||pincode.isEmpty()||optionalAddress.isEmpty()){
             showToast.showInfoToast("Should be fill Nick name,Person Name,Pincode,City, Landmark");
             progressDailog.dismissDailog();
             return;
@@ -257,7 +256,7 @@ public class MyAddressesFragment extends Fragment implements GoogleApiClient.Con
         addressstring.append(",");
         addressstring.append(landmark);
         addressstring.append(",");
-        addressstring.append(city);
+        addressstring.append(optionalAddress);
         addressstring.append(",");
         addressstring.append(pincode);
         String address = addressstring.toString();
@@ -287,6 +286,7 @@ public class MyAddressesFragment extends Fragment implements GoogleApiClient.Con
                                 showToast.showSuccessToast(msg);
                                 recyclershow();
                                 getaddresses(prefManager.getUserId());
+                                prefManager.setCity(optionalAddress);
                                 nickName.setText("");
                                 addresscity.setText("");
                                 addresspincode.setText("");

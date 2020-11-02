@@ -53,7 +53,7 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.ViewHo
     private ViewitemsActivity viewitemsActivity;
     private WMCartActivity wmCartActivity;
     private PrefManager prefManager;
-    private String cartType;
+    private String cartType, cartModel;
     private int i;
     public CheckoutAdapter(Activity activity, List<OrdersCommonClass> allCommonClasses, CartItemsActivity cartItemsActivity,int i) {
         this.allCommonClasses = allCommonClasses;
@@ -66,6 +66,7 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.ViewHo
         prefManager = new PrefManager(activity);
         this.i = i;
         this.cartType = "shoppingcart";
+        this.cartModel = "shop";
     }
     public CheckoutAdapter(Activity activity, List<OrdersCommonClass> allCommonClasses, ViewitemsActivity cartItemsActivity, int i) {
         this.allCommonClasses = allCommonClasses;
@@ -89,9 +90,11 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.ViewHo
         prefManager = new PrefManager(activity);
         this.i = i;
         if(cartType.equals("week")){
+            this.cartModel = "week";
             this.cartType = "getweekcartitems";
         }
         else {
+            this.cartModel = "month";
             this.cartType = "getmonthcartitems";
         }
     }
@@ -205,34 +208,31 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.ViewHo
                             .load("POST",BASE_URL+"deletecartitem")
                             .setMultipartParameter("userid",userId)
                             .setMultipartParameter("productid",productid)
+                            .setMultipartParameter("cartModel",cartModel)
                             .asString()
-                            .setCallback(new FutureCallback<String>() {
-                                @Override
-                                public void onCompleted(Exception e, String result) {
-                                    if(e!=null){
-                                        progressDailog.dismiss();
-                                        showToast.showWarningToast("Something went wrong");
-                                    }else {
-                                        try {
-                                            JSONObject jsonObject = new JSONObject(result);
-                                            String error = jsonObject.getString("error");
-                                            String msg  = jsonObject.getString("message");
-                                            if(error.equals("false")){
-                                                showToast.showSuccessToast(msg);
-                                                cartItemsActivity.getcartItems(userId);
-                                                if(i==3){
-                                                    wmCartActivity.getcartItems(userId,cartType);
-                                                }
-                                                if(i==1){
-                                                    cartItemsActivity.getcartItems(userId);
-                                                }
-                                            }else {
-                                                showToast.showWarningToast(msg);
+                            .setCallback((e, result) -> {
+                                if(e!=null){
+                                    progressDailog.dismiss();
+                                    showToast.showWarningToast("Something went wrong");
+                                }else {
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(result);
+                                        String error = jsonObject.getString("error");
+                                        String msg  = jsonObject.getString("message");
+                                        if(error.equals("false")){
+                                            showToast.showSuccessToast(msg);
+                                            if(i==3){
+                                                wmCartActivity.getcartItems(userId,cartType);
                                             }
-                                            progressDailog.dismiss();
-                                        } catch (JSONException e1) {
-                                            e1.printStackTrace();
+                                            if(i==1){
+                                                cartItemsActivity.getcartItems(userId);
+                                            }
+                                        }else {
+                                            showToast.showWarningToast(msg);
                                         }
+                                        progressDailog.dismiss();
+                                    } catch (JSONException e1) {
+                                        e1.printStackTrace();
                                     }
                                 }
                             });

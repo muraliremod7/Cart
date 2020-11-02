@@ -67,9 +67,6 @@ public class AllItemsActivity extends AppCompatActivity {
     private int code = 0;
     private ArrayList<Prices> prices;
     private LinearLayoutManager layoutManager;
-    private static final int MAX_ITEMS_PER_REQUEST = 10;
-    private static final int NUMBER_OF_ITEMS = 100;
-    private static final int SIMULATED_LOADING_TIME_IN_MS = 1500;
     private ChipGroup chipGroup;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,7 +168,6 @@ public class AllItemsActivity extends AppCompatActivity {
                         progressDailog.dismissDailog();
                         gridAdapter = new GridAdapter(AllItemsActivity.this,arrayList,AllItemsActivity.this);
                         productsRecycler.setAdapter(gridAdapter);
-                        productsRecycler.addOnScrollListener(createInfiniteScrollListener());
                         gridAdapter.notifyDataSetChanged();
 
                         gridAdapter.SetOnItemClickListener((view, position) -> {
@@ -270,57 +266,7 @@ public class AllItemsActivity extends AppCompatActivity {
                     }
                 });
     }
-    @NonNull private List<ProductCommonClass> getItemsToBeLoaded(int start, int end) throws IndexOutOfBoundsException {
-        List<ProductCommonClass> newItems = arrayList.subList(start, end);
-        final List<ProductCommonClass> oldItems = ((GridAdapter) Objects.requireNonNull(productsRecycler.getAdapter())).getItems();
-        final List<ProductCommonClass> itemsLocal = new LinkedList<>();
-        itemsLocal.addAll(oldItems);
-        itemsLocal.addAll(newItems);
-        return itemsLocal;
-    }
-    @NonNull
-    private InfiniteScrollListener createInfiniteScrollListener() {
-        return new InfiniteScrollListener(MAX_ITEMS_PER_REQUEST, layoutManager) {
-            @Override public void onScrolledToEnd(final int firstVisibleItemPosition) {
-                simulateLoading();
-                int start = ++page * MAX_ITEMS_PER_REQUEST;
-                final boolean allItemsLoaded = start >= arrayList.size();
-                if (allItemsLoaded) {
-                    progressDailog.dismissDailog();
-                } else {
-                    try{
-                        int end = start + MAX_ITEMS_PER_REQUEST;
-                        final List<ProductCommonClass> itemsLocal = getItemsToBeLoaded(start, end);
-                        refreshView(productsRecycler, new GridAdapter(AllItemsActivity.this,itemsLocal,AllItemsActivity.this), firstVisibleItemPosition);
 
-                    }catch (IndexOutOfBoundsException e){
-
-                    }
-                }
-            }
-        };
-    }
-    @SuppressLint("StaticFieldLeak")
-    private void simulateLoading() {
-        new AsyncTask<Void, Void, Void>() {
-            @Override protected void onPreExecute() {
-                progressDailog.showDailog();
-            }
-
-            @Override protected Void doInBackground(Void... params) {
-                try {
-                    Thread.sleep(SIMULATED_LOADING_TIME_IN_MS);
-                } catch (InterruptedException e) {
-                    Log.e("MainActivity", e.getMessage());
-                }
-                return null;
-            }
-
-            @Override protected void onPostExecute(Void param) {
-                progressDailog.dismissDailog();
-            }
-        }.execute();
-    }
     public void setCategoryChips(ArrayList<Brands> categorys) {
         for (Brands category : categorys) {
             Chip mChip = (Chip) this.getLayoutInflater().inflate(R.layout.item_chip_category, null, false);
@@ -337,7 +283,9 @@ public class AllItemsActivity extends AppCompatActivity {
             });
             chipGroup.addView(mChip);
         }
-    }
+    }    @NonNull
+    @SuppressLint("StaticFieldLeak")
+
 
     private void getBrandProducts(String categoryId, String subcatid, String brandid) {
         arrayList.clear();
@@ -376,7 +324,6 @@ public class AllItemsActivity extends AppCompatActivity {
                             }
                             gridAdapter = new GridAdapter(AllItemsActivity.this,arrayList,AllItemsActivity.this);
                             productsRecycler.setAdapter(gridAdapter);
-                            productsRecycler.addOnScrollListener(createInfiniteScrollListener());
                             gridAdapter.notifyDataSetChanged();
                             progressDailog.dismissDailog();
                             gridAdapter.SetOnItemClickListener((view, position) -> {

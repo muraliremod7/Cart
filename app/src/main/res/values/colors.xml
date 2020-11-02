@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#EC4849</color>
-    <color name="colorPrimarylight">#EC4849</color>
-    <color name="colorPrimaryDark">#EC4849</color>
-    <color name="colorAccent">#EC4849</color>
+    <color name="colorPrimary">#E23E57</color>
+    <color name="colorPrimarylight">#E23E57</color>
+    <color name="colorPrimaryDark">#E23E57</color>
+    <color name="colorAccent">#E23E57</color>
     <color name="colorAccentt">#F1A978</color>
     <color name="colorGreen">#78ca28</color>
     <color name="selected_product_count">#4d4d4d</color>

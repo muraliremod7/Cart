@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+
+import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import androidx.cardview.widget.CardView;
@@ -20,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 
@@ -61,7 +64,6 @@ import dmax.dialog.SpotsDialog;
 import static com.intern.kartcorner.app.Constants.BASE_URL;
 
 public class DashboardFragment extends Fragment implements BaseSliderView.OnSliderClickListener,ViewPagerEx.OnPageChangeListener,View.OnClickListener {
-    private CollapsingToolbarLayout collapsingToolbarLayout;
     private SliderLayout mDemoSlider,lowerslider;
     HashMap<String, String> HashMapForURL,lHashMapForURL ;
     private OnFragmentInteractionListener mListener;
@@ -95,11 +97,10 @@ public class DashboardFragment extends Fragment implements BaseSliderView.OnSlid
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
         ButterKnife.bind(this,view);
-        mDemoSlider = (SliderLayout)view.findViewById(R.id.slider);
-        lowerslider = (SliderLayout)view.findViewById(R.id.lowerslider);
+        mDemoSlider = view.findViewById(R.id.slider);
+        lowerslider = view.findViewById(R.id.lowerslider);
         autoCompleteTextView = view.findViewById(R.id.productsACT);
         prices = new ArrayList<>();
-        collapsingToolbarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
         initViews();
         return view;
     }
@@ -140,12 +141,6 @@ public class DashboardFragment extends Fragment implements BaseSliderView.OnSlid
     }
 
     private void initViews() {
-
-        if(collapsingToolbarLayout != null){
-            collapsingToolbarLayout.setTitle("CartCorner");
-            //collapsingToolbarLayout.setCollapsedTitleTextColor(0xED1C24);
-            //collapsingToolbarLayout.setExpandedTitleColor(0xED1C24);
-        }
         progressDailog = new SpotsDialog(getContext());
         showToast = new ShowToast(getContext());
         //Call this method if you want to add images from URL .
@@ -255,7 +250,7 @@ public class DashboardFragment extends Fragment implements BaseSliderView.OnSlid
     private void showslider() {
         for(String name : lHashMapForURL.keySet()){
 
-            TextSliderView textSliderView = new TextSliderView(getContext());
+            DefaultSliderView textSliderView = new DefaultSliderView(getContext());
 
             textSliderView
                     .description("")
@@ -271,7 +266,6 @@ public class DashboardFragment extends Fragment implements BaseSliderView.OnSlid
             lowerslider.addSlider(textSliderView);
         }
         lowerslider.setPresetTransformer(SliderLayout.Transformer.DepthPage);
-        lowerslider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
         lowerslider.setCustomAnimation(new DescriptionAnimation());
         lowerslider.setDuration(5000);
         lowerslider.addOnPageChangeListener(this);
@@ -279,7 +273,7 @@ public class DashboardFragment extends Fragment implements BaseSliderView.OnSlid
     private void showlowerslider() {
         for(String name : HashMapForURL.keySet()){
 
-            TextSliderView textSliderView = new TextSliderView(getContext());
+            DefaultSliderView textSliderView = new DefaultSliderView(getContext());
 
             textSliderView
                     .description("")
@@ -405,6 +399,8 @@ public class DashboardFragment extends Fragment implements BaseSliderView.OnSlid
                             adapter.notifyDataSetChanged();
                             progressDailog.dismiss();
                             autoCompleteTextView.setOnItemClickListener((adapterView, view, i, l) -> {
+                                InputMethodManager in = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                in.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
                                 ProductCommonClass fruit = (ProductCommonClass) adapterView.getItemAtPosition(i);
                                 Intent intent = new Intent(getActivity(), SingleItemActivity.class);
                                 intent.putExtra("productdata", (Serializable) fruit);

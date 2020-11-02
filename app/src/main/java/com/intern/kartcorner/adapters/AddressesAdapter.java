@@ -172,6 +172,7 @@ public class AddressesAdapter extends RecyclerView.Adapter<AddressesAdapter.View
             personname.setText(myAddressDAO.getPersonname());
             final EditText address = (EditText)dialogView.findViewById(R.id.addressedital);
             address.setText(myAddressDAO.getAddress());
+            final EditText pincode = (EditText)dialogView.findViewById(R.id.addresseditpincode);
             Button update = (Button)dialogView.findViewById(R.id.saveAddressal);
             update.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -181,12 +182,18 @@ public class AddressesAdapter extends RecyclerView.Adapter<AddressesAdapter.View
                     String newaddress = address.getText().toString();
                     String newnickname = nickname.getText().toString();
                     String newpersonname = personname.getText().toString();
+                    String pin = pincode.getText().toString();
+                    if(pin.isEmpty()){
+                        showToast.showWarningToast("Pincode is mandatory");
+                        return;
+                    }
+                    String address = newaddress+pin;
                     if(newaddress.isEmpty()||newnickname.isEmpty()||newpersonname.isEmpty()){
                         progressDailog.dismissDailog();
                         showToast.showWarningToast("All fields are mandotory");
                         return;
                     }
-                    updateaddress(addressid,newaddress,newnickname,newpersonname);
+                    updateaddress(addressid,address,newnickname,newpersonname);
                 }
 
                 private void updateaddress(String addressid, String newaddress, String newnickname, String newpersonname) {

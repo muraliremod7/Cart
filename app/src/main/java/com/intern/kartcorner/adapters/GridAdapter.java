@@ -303,7 +303,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> im
                                     if (error.equals("false")) {
                                         showToast.showSuccessToast(msg);
                                         spotsDialog.dismiss();
-                                        badgecount();
+                                        //badgecount();
                                     } else {
                                         showToast.showErrorToast(msg);
                                         spotsDialog.dismiss();
@@ -374,6 +374,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> im
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
                 mFilteredList = (ArrayList<ProductCommonClass>) filterResults.values;
+               // productList = (ArrayList<ProductCommonClass>) filterResults.values;
                 notifyDataSetChanged();
             }
         };

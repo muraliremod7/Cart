@@ -3,4 +3,5 @@
 
     <gradient android:startColor="@color/colorAccent"
         android:endColor="@color/colorAccentt"/>
+    <corners android:radius="10dp"/>
 </shape>

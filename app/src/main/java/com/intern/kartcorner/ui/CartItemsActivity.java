@@ -180,10 +180,9 @@ public class CartItemsActivity extends AppCompatActivity{
     }
     @OnClick(R.id.startshopping_image)
     void startshopping(){
-        this.finish();
 //        Intent intent = new Intent(CartItemsActivity.this,MainActivity.class);
 //        startActivity(intent);
-//        finish();
+        finish();
     }
     @OnClick(R.id.startshopping)
     void startshop(){
@@ -198,9 +197,7 @@ public class CartItemsActivity extends AppCompatActivity{
     }
 
     protected void exitByBackKey() {
-        Intent intent = new Intent(CartItemsActivity.this,MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+        this.finish();
 
     }
 }

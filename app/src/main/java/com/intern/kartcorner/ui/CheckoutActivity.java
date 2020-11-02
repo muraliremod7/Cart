@@ -1,24 +1,10 @@
 package com.intern.kartcorner.ui;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatCheckBox;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.appcompat.widget.AppCompatSpinner;
-import androidx.core.widget.NestedScrollView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.NetworkOnMainThreadException;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -38,6 +24,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -47,22 +46,20 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.intern.kartcorner.app.Constants;
+import com.intern.kartcorner.R;
+import com.intern.kartcorner.adapters.AddressesAdapter;
+import com.intern.kartcorner.entities.MyAddressDAO;
 import com.intern.kartcorner.helper.AlertDialogManager;
+import com.intern.kartcorner.helper.CalenderSpinnerAdapter;
+import com.intern.kartcorner.helper.PrefManager;
+import com.intern.kartcorner.helper.ShowToast;
 import com.intern.kartcorner.model.OffersDAO;
 import com.intern.kartcorner.model.OrdersCommonClass;
 import com.intern.kartcorner.paytm.Checksum;
 import com.intern.kartcorner.paytm.Paytm;
 import com.intern.kartcorner.paytm.WebServiceCaller;
 import com.intern.kartcorner.services.JavaMailApi;
-import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
-import com.intern.kartcorner.R;
-import com.intern.kartcorner.adapters.AddressesAdapter;
-import com.intern.kartcorner.entities.MyAddressDAO;
-import com.intern.kartcorner.helper.CalenderSpinnerAdapter;
-import com.intern.kartcorner.helper.PrefManager;
-import com.intern.kartcorner.helper.ShowToast;
 import com.paytm.pgsdk.PaytmOrder;
 import com.paytm.pgsdk.PaytmPGService;
 import com.paytm.pgsdk.PaytmPaymentTransactionCallback;
@@ -72,7 +69,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -81,18 +77,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Properties;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.UUID;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -149,6 +134,8 @@ public class CheckoutActivity extends AppCompatActivity implements GoogleApiClie
     TextView offerfailMessage;
     @BindView(R.id.offerSuccessMessage)
     TextView offerSuccessMessage;
+    @BindView(R.id.intimation)
+    AppCompatTextView info;
     @BindView(R.id.submitPromocode)
     AppCompatButton submitPromocode;
     @BindView(R.id.selectPaymenyMode)
@@ -179,7 +166,7 @@ public class CheckoutActivity extends AppCompatActivity implements GoogleApiClie
     private ArrayList<OrdersCommonClass> cartItems;
     private AlertDialogManager alertDialogManager;
     private OffersDAO offersDAO;
-    private Session mSession;
+    private ArrayList<String> pincodes = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,6 +178,7 @@ public class CheckoutActivity extends AppCompatActivity implements GoogleApiClie
         LinearLayoutManager llm = new LinearLayoutManager(this);
         checkoutsrecyclerView.setLayoutManager(llm);
         checkoutsrecyclerView.setHasFixedSize(true);
+        addpincodes();
         cartItems = new ArrayList<>();
         CalenderSpinnerAdapter calenderSpinnerAdapter = new CalenderSpinnerAdapter(this,5);
         choosedate.setAdapter(calenderSpinnerAdapter);
@@ -242,7 +230,9 @@ public class CheckoutActivity extends AppCompatActivity implements GoogleApiClie
             int tm = Integer.parseInt(totalamount)+Integer.parseInt("40");
             orderDeliverypayamount.setText(String.valueOf(tm));
             totalamount = String.valueOf(tm);
+            info.setVisibility(View.VISIBLE);
         }else {
+            info.setVisibility(View.GONE);
             orderDeliveryCharges.setText("0");
             orderDeliverypayamount.setText(totalamount);
         }
@@ -282,9 +272,31 @@ public class CheckoutActivity extends AppCompatActivity implements GoogleApiClie
 
         });
     }
+
+    private void addpincodes() {
+        pincodes.add("520001");
+        pincodes.add("520002");
+        pincodes.add("520003");
+        pincodes.add("520004");
+        pincodes.add("520005");
+        pincodes.add("520006");
+        pincodes.add("520007");
+        pincodes.add("520008");
+        pincodes.add("520009");
+        pincodes.add("520010");
+        pincodes.add("520011");
+        pincodes.add("520012");
+        pincodes.add("520013");
+        pincodes.add("520014");
+        pincodes.add("520015");
+        pincodes.add("521104");
+        pincodes.add("521108");
+        pincodes.add("521137");
+    }
+
     @OnClick(R.id.submitPromocode)
     void applyPromoCode(){
-            if(Integer.parseInt(totalamount)<=400){
+            if(Integer.parseInt(totalamount)<=600){
                 offerFail.setVisibility(View.VISIBLE);
                 return;
             }
@@ -434,7 +446,14 @@ public class CheckoutActivity extends AppCompatActivity implements GoogleApiClie
 
     @OnClick(R.id.placeOrder)
     void placeorder(){
-        if(!prefManager.getCity().equals("Vijayawada")){
+        String address = deliveryaddresscheckout.getText().toString();
+        boolean ac = false;
+        for(int i=0;i<pincodes.size();i++){
+            if(address.contains(pincodes.get(i))){
+                ac = true;
+            }
+        }
+        if(!ac){
             alertDialogManager.showAlertDialog(CheckoutActivity.this,"Service Not Available","We are presently not providing Cartcorner services to out of Vijayawada City, Please Stay with us we will touch you soon",false);
             return;
         }
@@ -461,7 +480,7 @@ public class CheckoutActivity extends AppCompatActivity implements GoogleApiClie
 
     private void saveTransactionDetails() {
         String delcharges = null;
-        if(Integer.parseInt(totalamount)<=250){
+        if(Integer.parseInt(totalamount)<=300){
             delcharges = "40";
         }else {
             delcharges = "0";
@@ -483,6 +502,7 @@ public class CheckoutActivity extends AppCompatActivity implements GoogleApiClie
                 .setMultipartParameter("carttype",cartType)
                 .setMultipartParameter("transactionid",transactionid)
                 .setMultipartParameter("couponcode",couponcode)
+                .setMultipartParameter("delivery_address",deliveryaddresscheckout.getText().toString())
                 .asString()
                 .setCallback((e, result) -> {
                     if(e!=null){
@@ -504,8 +524,7 @@ public class CheckoutActivity extends AppCompatActivity implements GoogleApiClie
                                 }
                                 sendEmail();
                                 final OkHttpClient client=new OkHttpClient();
-                                String  url = "https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=qO3Yw24kVkepMeKVkhXkIA&senderid=CRTCNR&channel=2&DCS=0&flashsms=0&" +
-                                        "number="+"91"+prefManager.getMobileNumber()+"&text="+"Cart Corner has received Your Order and Cartcorner representative will deliver  by "+deliverydate+" - "+deliverytime +"\n"+ "Thank You"+"&route=1";
+String  url = "https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=qO3Yw24kVkepMeKVkhXkIA&senderid=SMSTST&channel=2&DCS=0&flashsms=0&number=91"+prefManager.getMobileNumber()+"&text=Cart Corner has received Your Order and Cartcorner representative will deliver  by "+deliverydate+" - "+deliverytime +"\n"+ "Thank You&route=0";
                                 Request request=new Request.Builder()
                                         .url(url)
                                         .build();
@@ -638,7 +657,7 @@ public class CheckoutActivity extends AppCompatActivity implements GoogleApiClie
 
     private void additemtocart(String userId, String savingCart, ArrayList<OrdersCommonClass> cartItems) {
         AlertDialog alertbox = new AlertDialog.Builder(CheckoutActivity.this,R.style.MyAlertDialogStyle)
-                .setTitle("Confirmation For Weekly Cart ?")
+                .setTitle("Confirmation For "+savingCart.toUpperCase()+" Cart ?")
                 .setMessage("Do you want to add this items into "+ savingCart +"?")
                 .setPositiveButton("Yes", (dialogInterface, i) -> {
                     progressDailog.show();
@@ -761,6 +780,7 @@ public class CheckoutActivity extends AppCompatActivity implements GoogleApiClie
                             progressDailog.dismiss();
                         } catch (JSONException e1) {
                             e1.printStackTrace();
+                            progressDailog.dismiss();
                         }
                     }
                 });
@@ -808,48 +828,45 @@ public class CheckoutActivity extends AppCompatActivity implements GoogleApiClie
         CheckBox confircheckbox = dialogView.findViewById(R.id.ch_default_type);
         confircheckbox.setOnCheckedChangeListener(this);
         Button save = dialogView.findViewById(R.id.ch_saveAddress);
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                progressDailog.show();
-                String nickName = nickname.getText().toString();
-                String personName = personname.getText().toString();
-                String houseNo = houseno.getText().toString();
-                String streetName = streetname.getText().toString();
-                String area = areaname.getText().toString();
-                String apartmentName = apartmentname.getText().toString();
-                String landMark = arealandmark.getText().toString();
-                String pinCode = areapincode.getText().toString();
-                String city = cityname.getText().toString();
-                if(nickName.isEmpty()||personName.isEmpty()||landMark.isEmpty()||pinCode.isEmpty()||city.isEmpty()){
-                    showToast.showInfoToast("Should be fill Nick name,Person Name,Pincode,City, Landmark");
-                    progressDailog.dismiss();
-                    return;
-                }
-                StringBuilder addressstring = new StringBuilder();
-                if(!houseNo.isEmpty()){
-                    addressstring.append(houseNo);
-                    addressstring.append(",");
-                }
-                if(!streetName.isEmpty()){
-                    addressstring.append(streetName);
-                    addressstring.append(",");
-                }
-                if(!apartmentName.isEmpty()){
-                    addressstring.append(apartmentName);
-                    addressstring.append(",");
-                }
-                addressstring.append(area);
-                addressstring.append(",");
-                addressstring.append(landMark);
-                addressstring.append(",");
-                addressstring.append(city);
-                addressstring.append(",");
-                addressstring.append(pinCode);
-                address = addressstring.toString();
-                addAddress(prefManager.getUserId(),nickName,personName,address,condition,latlong);
-
+        save.setOnClickListener(view -> {
+            progressDailog.show();
+            String nickName = nickname.getText().toString();
+            String personName = personname.getText().toString();
+            String houseNo = houseno.getText().toString();
+            String streetName = streetname.getText().toString();
+            String area = areaname.getText().toString();
+            String apartmentName = apartmentname.getText().toString();
+            String landMark = arealandmark.getText().toString();
+            String pinCode = areapincode.getText().toString();
+            String city = cityname.getText().toString().toLowerCase();
+            if(nickName.isEmpty()||personName.isEmpty()||landMark.isEmpty()||pinCode.isEmpty()||city.isEmpty()){
+                showToast.showInfoToast("Should be fill Nick name,Person Name,Pincode,City, Landmark");
+                progressDailog.dismiss();
+                return;
             }
+            StringBuilder addressstring = new StringBuilder();
+            if(!houseNo.isEmpty()){
+                addressstring.append(houseNo);
+                addressstring.append(",");
+            }
+            if(!streetName.isEmpty()){
+                addressstring.append(streetName);
+                addressstring.append(",");
+            }
+            if(!apartmentName.isEmpty()){
+                addressstring.append(apartmentName);
+                addressstring.append(",");
+            }
+            addressstring.append(area);
+            addressstring.append(",");
+            addressstring.append(landMark);
+            addressstring.append(",");
+            addressstring.append(city);
+            addressstring.append(",");
+            addressstring.append(pinCode);
+            address = addressstring.toString();
+            addAddress(prefManager.getUserId(),nickName,personName,address,condition,latlong);
+
         });
         //finally creating the alert dialog and displaying it
         alertDialog = builder.create();

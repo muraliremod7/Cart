@@ -104,10 +104,21 @@ public class SubCategoriesActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId()==android.R.id.home){
-            Intent intent = new Intent(SubCategoriesActivity.this,MainActivity.class);
-            startActivity(intent);
-            finish();
+            back();
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        back();
+    }
+
+    private void back() {
+//        Intent intent = new Intent(SubCategoriesActivity.this,MainActivity.class);
+//        startActivity(intent);
+        finish();
+    }
+
 }
