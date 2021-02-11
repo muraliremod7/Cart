@@ -104,9 +104,6 @@ public class SingleItemActivity extends AppCompatActivity implements View.OnClic
         singleac = (Button) findViewById(R.id.singleaddtoCart);
         singleac.setOnClickListener(this);
         classes = CenterRepository.getCenterRepository().getListInCart();
-        if(prefManager.getUserId()!=null){
-            badgecount();
-        }
         initialize();
     }
 
@@ -213,24 +210,6 @@ public class SingleItemActivity extends AppCompatActivity implements View.OnClic
         return false;
     }
 
-    public void setBadgeCount(Context context, String count) {
-
-        BadgeDrawable badge;
-
-        // Reuse drawable if possible
-        Drawable reuse = icon.findDrawableByLayerId(R.id.ic_badge);
-        if (reuse != null && reuse instanceof BadgeDrawable) {
-            badge = (BadgeDrawable) reuse;
-        } else {
-            badge = new BadgeDrawable(context);
-        }
-
-        badge.setCount(count);
-        badgecount();
-        icon.mutate();
-        icon.setDrawableByLayerId(R.id.ic_badge, badge);
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -311,7 +290,6 @@ public class SingleItemActivity extends AppCompatActivity implements View.OnClic
                             String msg = jsonObject.getString("message");
                             if (error.equals("false")) {
                                 showToast.showSuccessToast(msg);
-                                badgecount();
                                 spotsDialog.dismiss();
                             }
                         } catch (JSONException e1) {
@@ -361,32 +339,5 @@ public class SingleItemActivity extends AppCompatActivity implements View.OnClic
         });
         // Showing Alert Message
         alertDialog.show();
-    }
-
-    public void badgecount() {
-        prefManager = new PrefManager(this);
-        Ion.with(this)
-                .load("POST", BASE_URL + "getcartitems")
-                .setMultipartParameter("userid", prefManager.getUserId())
-                .asString()
-                .setCallback((e, result) -> {
-                    if (e != null) {
-
-                    } else {
-                        try {
-                            JSONObject jsonObject = new JSONObject(result);
-                            JSONArray jsonArray = jsonObject.getJSONArray("cartitems");
-                            k = String.valueOf(jsonArray.length());
-                            try{
-                                setBadgeCount(this, k);
-                            }catch (NullPointerException e1){
-                                e1.printStackTrace();
-                            }
-
-                        } catch (JSONException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                });
     }
 }

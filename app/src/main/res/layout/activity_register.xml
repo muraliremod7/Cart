@@ -7,8 +7,7 @@
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
     android:focusable="true"
-    android:background="@color/white"
-    >
+    android:background="@color/white">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -236,7 +235,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:clickable="false"
-                        android:hint="Enter Your Address"
+                        android:hint="Enter Your Address with D No"
                         android:paddingLeft="5dp"
                         android:singleLine="true"
                         android:text=""

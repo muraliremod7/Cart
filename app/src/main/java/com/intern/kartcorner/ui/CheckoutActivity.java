@@ -454,7 +454,7 @@ public class CheckoutActivity extends AppCompatActivity implements GoogleApiClie
             }
         }
         if(!ac){
-            alertDialogManager.showAlertDialog(CheckoutActivity.this,"Service Not Available","We are presently not providing Cartcorner services to out of Vijayawada City, Please Stay with us we will touch you soon",false);
+            alertDialogManager.showAlertDialog(CheckoutActivity.this,"Service Not Available","Sorry, We are not delivering in this pincode. Soon we will reach out to you. Thankyou",false);
             return;
         }
         if(paymentMode.equals("Choose")){
@@ -524,7 +524,7 @@ public class CheckoutActivity extends AppCompatActivity implements GoogleApiClie
                                 }
                                 sendEmail();
                                 final OkHttpClient client=new OkHttpClient();
-String  url = "https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=qO3Yw24kVkepMeKVkhXkIA&senderid=SMSTST&channel=2&DCS=0&flashsms=0&number=91"+prefManager.getMobileNumber()+"&text=Cart Corner has received Your Order and Cartcorner representative will deliver  by "+deliverydate+" - "+deliverytime +"\n"+ "Thank You&route=0";
+String  url = "https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=qO3Yw24kVkepMeKVkhXkIA&senderid=CARTCN&channel=2&DCS=0&flashsms=0&number=91"+prefManager.getMobileNumber()+"&text=Cart Corner has received Your Order and Cartcorner representative will deliver  by "+deliverydate+" - "+deliverytime +"\n"+ "Thank You&route=0";
                                 Request request=new Request.Builder()
                                         .url(url)
                                         .build();

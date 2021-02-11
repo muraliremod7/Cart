@@ -481,7 +481,6 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> im
                             JSONObject jsonObject = new JSONObject(result);
                             JSONArray jsonArray = jsonObject.getJSONArray("cartitems");
                             k = String.valueOf(jsonArray.length());
-                            itemsActivity.setBadgeCount(activity, k);
                         } catch (JSONException e1) {
                             e1.printStackTrace();
                         }

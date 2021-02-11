@@ -78,9 +78,6 @@ public class AllItemsActivity extends AppCompatActivity {
         showToast = new ShowToast(this);
         chipGroup = (ChipGroup)findViewById(R.id.brandchips);
         progressDailog = new ProgressDailog(this);
-        if(prefManager.getUserId()!=null){
-            badgecount();
-        }
         prices = new ArrayList<>();
         uid = prefManager.getUserId();
         productsRecycler = findViewById(R.id.allitemsGridvieww);
@@ -211,28 +208,6 @@ public class AllItemsActivity extends AppCompatActivity {
 
         return true;
     }
-
-    public void setBadgeCount(Context context, String count) {
-
-        BadgeDrawable badge;
-
-        // Reuse drawable if possible
-        try {
-            Drawable reuse = icon.findDrawableByLayerId(R.id.ic_badge);
-            if (reuse != null && reuse instanceof BadgeDrawable) {
-                badge = (BadgeDrawable) reuse;
-            } else {
-                badge = new BadgeDrawable(context);
-            }
-            badge.setCount(count);
-            badgecount();
-            icon.mutate();
-            icon.setDrawableByLayerId(R.id.ic_badge, badge);
-        }catch (NullPointerException e){
-            e.printStackTrace();
-        }
-
-    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -244,27 +219,6 @@ public class AllItemsActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-    public void badgecount(){
-        prefManager = new PrefManager(this);
-        Ion.with(this)
-                .load("POST",BASE_URL+"getcartitems")
-                .setMultipartParameter("userid",prefManager.getUserId())
-                .asString()
-                .setCallback((e, result) -> {
-                    if(e!=null){
-
-                    }else {
-                        try {
-                            JSONObject jsonObject = new JSONObject(result);
-                            JSONArray jsonArray = jsonObject.getJSONArray("cartitems");
-                            k = String.valueOf(jsonArray.length());
-                            setBadgeCount(AllItemsActivity.this,k);
-                        } catch (JSONException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                });
     }
 
     public void setCategoryChips(ArrayList<Brands> categorys) {

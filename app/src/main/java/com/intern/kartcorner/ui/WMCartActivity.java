@@ -158,7 +158,7 @@ public class WMCartActivity extends AppCompatActivity {
         switch (item.getItemId()) {
 
             case android.R.id.home:
-                this.finish();
+                startshopping();
                 return true;
             default:
                 // If we got here, the user's action was not recognized.
@@ -194,7 +194,7 @@ public class WMCartActivity extends AppCompatActivity {
     }
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            exitByBackKey();
+            startshopping();
 
             //moveTaskToBack(false);
 

@@ -33,7 +33,9 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:background="@drawable/bordera"
-                    android:layout_height="45dp" />
+                    android:layout_height="45dp"
+                    android:focusable="false"
+                    android:focusedByDefault="false"/>
                 <com.daimajia.slider.library.SliderLayout
                     android:layout_marginTop="10dp"
                     android:id="@+id/slider"
